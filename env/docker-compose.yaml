@@ -40,6 +40,8 @@ services:
       dockerfile: Dockerfile-frontend
       context: .
     container_name: my-manager
+    environment:
+      PORT: 8080
     tty: true
     user: 1000:1000
     volumes:
@@ -62,20 +64,20 @@ services:
     networks:
       - my-manager
 
-  my-manager-migrate:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: golang
-    container_name: my-manager-migrate
-    command: go run main.go migrate
-    volumes:
-      - ./:/go/src/app:ro
-      - $GOPATH/pkg:/go/pkg:ro
-    networks:
-      - my-manager
-    depends_on:
-      - my-manager-postgres
+  # my-manager-migrate:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: .
+  #     target: golang
+  #   container_name: my-manager-migrate
+  #   command: go run main.go migrate
+  #   volumes:
+  #     - ./:/go/src/app:ro
+  #     - $GOPATH/pkg:/go/pkg:ro
+  #   networks:
+  #     - my-manager
+  #   depends_on:
+  #     - my-manager-postgres
 
 networks:
   my-manager:

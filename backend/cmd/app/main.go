@@ -3,13 +3,28 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/kolobok-kelbek/my-manager/config"
+	"github.com/kolobok-kelbek/my-manager/pkg/server"
+
+	"github.com/kolobok-kelbek/cong"
 )
 
+type Config struct {
+	Server server.Config
+}
+
 func main() {
-	mux := http.NewServeMux()
+	loader := cong.NewLoader[Config]()
+	cfg, err := loader.LoadFromEmbedFS("MyManager", config.ConfigDir, cong.YamlExt)
+	if err != nil {
+		panic(err)
+	}
+
+	srv := server.NewServer(cfg.Server)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "hello world123\n")
+		fmt.Fprint(w, "hello world12343214321\n")
 	})
 
 	mux.HandleFunc("GET /path/", func(w http.ResponseWriter, r *http.Request) {
@@ -21,5 +36,5 @@ func main() {
 		fmt.Fprintf(w, "reading article with articleID=%v\n", articleID)
 	})
 
-	http.ListenAndServe("0.0.0.0:8080", mux)
+	srv.Run()
 }
